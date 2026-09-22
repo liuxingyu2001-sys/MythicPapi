@@ -54,15 +54,15 @@ Create a default hologram at your current location:
 /mmpapi hologram add <hologram-id> <spawner-id>
 ```
 
-For the usual case, use the shorter form below. It uses the MythicMobs spawner ID as the hologram ID and creates the hologram at that spawner's configured location. When a player runs it, the lowest hologram line is raised to the player's eye height.
+For the usual case, use the shorter form below. It uses the MythicMobs spawner ID as the hologram ID and creates the lowest hologram line two blocks above that spawner's configured location. Change `hologram-height` in `config.yml` to adjust this default.
 
-通常可以使用下面的简写形式。它会使用 MythicMobs 刷怪器 ID 作为全息 ID，并在该刷怪器配置的位置创建全息。玩家执行命令时，最底部的全息文本行会提升到玩家视线高度。
+通常可以使用下面的简写形式。它会使用 MythicMobs 刷怪器 ID 作为全息 ID，并让最底部的全息文本行位于该刷怪器配置点上方 2 格。可在 `config.yml` 中修改 `hologram-height` 调整默认悬浮高度。
 
 ```text
 /mmpapi hologram add <spawner-id>
 ```
 
-The default lines show the spawner ID, level, cooldown, and warmup. The default display scale is `1.5`; set a hologram's `scale` in `config.yml` to override it. Edit `holograms` to change the position, lines, line spacing, scale, or view range, then apply the changes with:
+The default lines show the spawner ID, level, health, amount, cooldown, and warmup. The default display scale is `1.5`; set a hologram's `scale` in `config.yml` to override it. Edit `holograms` to change the position, lines, line spacing, scale, or view range, then apply the changes with:
 
 默认文本行显示刷怪器 ID、等级、生命值、数量、冷却时间和预热时间。默认显示比例为 `1.5`；可以在 `config.yml` 中设置全息的 `scale` 覆盖默认值。编辑 `holograms` 可以修改位置、文本行、行间距、比例或可视距离，然后执行以下命令应用配置：
 
@@ -70,9 +70,9 @@ The default lines show the spawner ID, level, cooldown, and warmup. The default 
 /mmpapi hologram reload
 ```
 
-Adjust scale in-game with `/mmpapi hologram scale <hologram-id> <multiplier>` (valid range: `0.1` to `10`). Other commands are `/mmpapi hologram remove <hologram-id>` and `/mmpapi hologram list`.
+Adjust one hologram in-game with `/mmpapi hologram scale <hologram-id> <multiplier>` (valid range: `0.1` to `10`). Use `/mmpapi hologram scaleall <multiplier>` to update every existing hologram and the default scale used by newly created holograms. Other commands are `/mmpapi hologram remove <hologram-id>` and `/mmpapi hologram list`.
 
-可以使用 `/mmpapi hologram scale <hologram-id> <multiplier>` 在游戏中调整显示比例，有效范围为 `0.1` 至 `10`。`/mmpapi hologram sync` 会扫描所有当前 MythicMobs 刷新点，只为缺失的同名全息图创建默认配置，不会改写已有全息图。其他命令：`/mmpapi hologram remove <hologram-id>` 和 `/mmpapi hologram list`。
+可以使用 `/mmpapi hologram scale <hologram-id> <multiplier>` 在游戏中调整单个全息图显示比例，有效范围为 `0.1` 至 `10`；缩放会由下向上展开各行，不会降低最底部显示位置。使用 `/mmpapi hologram scaleall <multiplier>` 可一键修改所有已有全息图和未来新建全息图的默认比例。`/mmpapi hologram sync` 会扫描所有当前 MythicMobs 刷新点，只为缺失的同名全息图创建默认配置，不会改写已有全息图。其他命令：`/mmpapi hologram remove <hologram-id>` 和 `/mmpapi hologram list`。
 
 ## Build / 构建
 

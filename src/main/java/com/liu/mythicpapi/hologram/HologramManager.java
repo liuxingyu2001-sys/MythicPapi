@@ -103,6 +103,29 @@ public final class HologramManager implements Listener {
         return true;
     }
 
+    /** Sets the default scale and applies it to every configured hologram. */
+    public int setAllScales(double scale) {
+        plugin.getConfig().set("hologram-scale", scale);
+        ConfigurationSection holograms = plugin.getConfig().getConfigurationSection(ROOT);
+        if (holograms == null) {
+            plugin.saveConfig();
+            return 0;
+        }
+
+        int count = 0;
+        for (String id : holograms.getKeys(false)) {
+            if (holograms.getConfigurationSection(id) == null) {
+                continue;
+            }
+            plugin.getConfig().set(ROOT + "." + id + ".scale", scale);
+            count++;
+        }
+        plugin.saveConfig();
+        load();
+        refresh();
+        return count;
+    }
+
     public List<String> getHologramIds() {
         ConfigurationSection holograms = plugin.getConfig().getConfigurationSection(ROOT);
         return holograms == null ? List.of() : holograms.getKeys(false).stream().sorted().toList();

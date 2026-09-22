@@ -31,3 +31,6 @@ hologram-view-range: 32.0
 
 # Default text scale. Per-hologram `scale` overrides this value.
 hologram-scale: 1.5
+
+# Height in blocks above a MythicMobs spawner used for newly created holograms.
+hologram-height: 2.0

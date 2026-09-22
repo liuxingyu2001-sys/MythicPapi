@@ -41,6 +41,7 @@ public final class MythicPapiCommand implements CommandExecutor, TabCompleter {
             case "add" -> add(sender, label, args);
             case "remove", "delete" -> remove(sender, label, args);
             case "scale" -> scale(sender, label, args);
+            case "scaleall", "globalscale" -> scaleAll(sender, label, args);
             case "sync" -> sync(sender, label, args);
             case "reload" -> reload(sender);
             case "list" -> list(sender);
@@ -64,9 +65,7 @@ public final class MythicPapiCommand implements CommandExecutor, TabCompleter {
             return true;
         }
         var location = atSpawner ? mythicMobs.getSpawnerLocation(spawnerId)
-                .map(spawnerLocation -> sender instanceof Player player
-                        ? spawnerLocation.add(0.0, player.getEyeHeight(), 0.0)
-                        : spawnerLocation)
+                .map(this::atSpawnerHologramLocation)
                 : sender instanceof Player player ? java.util.Optional.of(player.getEyeLocation())
                 : java.util.Optional.<org.bukkit.Location>empty();
         if (location.isEmpty()) {
@@ -120,7 +119,7 @@ public final class MythicPapiCommand implements CommandExecutor, TabCompleter {
                 skipped++;
                 continue;
             }
-            var location = mythicMobs.getSpawnerLocation(spawnerId);
+            var location = mythicMobs.getSpawnerLocation(spawnerId).map(this::atSpawnerHologramLocation);
             if (location.isEmpty() || !holograms.create(spawnerId, spawnerId, location.get())) {
                 unavailable++;
                 continue;
@@ -145,7 +144,7 @@ public final class MythicPapiCommand implements CommandExecutor, TabCompleter {
             sender.sendMessage(ChatColor.RED + "倍率必须是数字，例如 1.5。");
             return true;
         }
-        if (value < 0.1 || value > 10.0) {
+        if (!Double.isFinite(value) || value < 0.1 || value > 10.0) {
             sender.sendMessage(ChatColor.RED + "倍率必须在 0.1 到 10 之间。");
             return true;
         }
@@ -153,6 +152,32 @@ public final class MythicPapiCommand implements CommandExecutor, TabCompleter {
                 ? ChatColor.GREEN + "已将全息图 " + args[2] + " 的显示倍率设为 " + value + "。"
                 : ChatColor.RED + "未找到全息图 " + args[2] + "。");
         return true;
+    }
+
+    private boolean scaleAll(CommandSender sender, String label, String[] args) {
+        if (args.length != 3) {
+            sender.sendMessage(ChatColor.YELLOW + "用法: /" + label + " hologram scaleall <倍率>");
+            return true;
+        }
+        final double value;
+        try {
+            value = Double.parseDouble(args[2]);
+        } catch (NumberFormatException ignored) {
+            sender.sendMessage(ChatColor.RED + "倍率必须是数字，例如 1.5。");
+            return true;
+        }
+        if (!Double.isFinite(value) || value < 0.1 || value > 10.0) {
+            sender.sendMessage(ChatColor.RED + "倍率必须在 0.1 到 10 之间。");
+            return true;
+        }
+        int count = holograms.setAllScales(value);
+        sender.sendMessage(ChatColor.GREEN + "已将 " + count + " 个全息图和默认倍率设为 " + value + "。");
+        return true;
+    }
+
+    private org.bukkit.Location atSpawnerHologramLocation(org.bukkit.Location spawnerLocation) {
+        double height = plugin.getConfig().getDouble("hologram-height", 2.0);
+        return spawnerLocation.clone().add(0.0, height, 0.0);
     }
 
     private boolean list(CommandSender sender) {
@@ -166,6 +191,7 @@ public final class MythicPapiCommand implements CommandExecutor, TabCompleter {
         sendAddUsage(sender, label);
         sender.sendMessage(ChatColor.YELLOW + "/" + label + " hologram remove <全息图ID>");
         sender.sendMessage(ChatColor.YELLOW + "/" + label + " hologram scale <全息图ID> <倍率>");
+        sender.sendMessage(ChatColor.YELLOW + "/" + label + " hologram scaleall <倍率>  &7(修改全部全息图)");
         sender.sendMessage(ChatColor.YELLOW + "/" + label + " hologram sync  &7(补齐所有刷新点全息图)");
         sender.sendMessage(ChatColor.YELLOW + "/" + label + " hologram reload | list");
     }
@@ -184,7 +210,7 @@ public final class MythicPapiCommand implements CommandExecutor, TabCompleter {
             return prefix(List.of("hologram"), args[0]);
         }
         if (args.length == 2 && args[0].equalsIgnoreCase("hologram")) {
-            return prefix(List.of("add", "remove", "scale", "sync", "reload", "list"), args[1]);
+            return prefix(List.of("add", "remove", "scale", "scaleall", "sync", "reload", "list"), args[1]);
         }
         if (args[0].equalsIgnoreCase("hologram") && args[1].equalsIgnoreCase("add")
                 && (args.length == 3 || args.length == 4)) {
