@@ -1,0 +1,32 @@
+# All holograms are managed by MythicPapi and use native Paper TextDisplay entities.
+# Edit this file, then run: /mythicpapi hologram reload
+#
+# Example:
+# holograms:
+#   forest_boss:
+#     location:
+#       world: world
+#       x: 100.5
+#       y: 65.0
+#       z: -20.5
+#       yaw: 0.0
+#       pitch: 0.0
+#     line-spacing: 0.25
+#     view-range: 32.0
+#     scale: 1.5
+#     lines:
+#       - '&6Forest Boss'
+#       - '&f等级: &e%mythicpapi_level_forest_boss%'
+#       - '&f血量: &c%mythicpapi_health_forest_boss%'
+#       - '&f冷却: &a%mythicpapi_cooldown_forest_boss%'
+#       - '&f预热: &b%mythicpapi_warmup_forest_boss%'
+holograms: {}
+
+# Default vertical distance in blocks between hologram lines.
+hologram-line-spacing: 0.25
+
+# Maximum viewing distance for each TextDisplay entity.
+hologram-view-range: 32.0
+
+# Default text scale. Per-hologram `scale` overrides this value.
+hologram-scale: 1.5

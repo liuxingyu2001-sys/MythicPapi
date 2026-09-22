@@ -1,0 +1,16 @@
+name: MythicPapi
+version: '${project.version}'
+main: com.liu.mythicpapi.MythicPapiPlugin
+api-version: '1.21'
+authors: [liu]
+description: PlaceholderAPI expansion for MythicMobs spawner timers.
+softdepend: [MythicMobs, PlaceholderAPI]
+commands:
+  mythicpapi:
+    description: Manage MythicPapi holograms
+    aliases: [mmpapi, mpapi]
+    usage: /mmpapi hologram <add|remove|scale|reload|list>
+permissions:
+  mythicpapi.admin:
+    description: Manage MythicPapi holograms
+    default: op
