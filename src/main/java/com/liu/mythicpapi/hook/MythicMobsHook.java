@@ -223,6 +223,53 @@ public final class MythicMobsHook {
         }
     }
 
+    /** Returns the number of still-alive active mobs associated with this spawner. */
+    public OptionalInt getActiveMobCount(String spawnerId) {
+        Plugin mythicMobs = Bukkit.getPluginManager().getPlugin("MythicMobs");
+        if (mythicMobs == null || !mythicMobs.isEnabled()) {
+            warnUnavailableOnce();
+            return OptionalInt.empty();
+        }
+
+        Accessor current = accessorFor(mythicMobs);
+        if (current == null) {
+            return OptionalInt.empty();
+        }
+
+        try {
+            Object manager = current.spawnerManager.invoke(mythicMobs);
+            Object spawner = manager == null ? null : current.getSpawnerByName.invoke(manager, spawnerId);
+            if (spawner == null) {
+                return OptionalInt.empty();
+            }
+            Object activeMobs = current.associatedMobs.invoke(spawner);
+            Object mobManager = current.mobManager.invoke(mythicMobs);
+            if (!(activeMobs instanceof Collection<?> mobIds) || mobManager == null) {
+                return OptionalInt.of(0);
+            }
+
+            int count = 0;
+            for (Object mobId : mobIds) {
+                if (!(mobId instanceof UUID uuid)) {
+                    continue;
+                }
+                Object result = current.getActiveMob.invoke(mobManager, uuid);
+                if (!(result instanceof Optional<?> optional) || optional.isEmpty()) {
+                    continue;
+                }
+                Object entity = current.activeMobEntity.invoke(optional.get());
+                if (entity != null && !Boolean.TRUE.equals(current.entityDead.invoke(entity))) {
+                    count++;
+                }
+            }
+            return OptionalInt.of(count);
+        } catch (IllegalAccessException | InvocationTargetException | RuntimeException exception) {
+            accessor = null;
+            warnUnavailableOnce();
+            return OptionalInt.empty();
+        }
+    }
+
     private OptionalInt readSpawnerValue(String spawnerId, Value value) {
         Plugin mythicMobs = Bukkit.getPluginManager().getPlugin("MythicMobs");
         if (mythicMobs == null || !mythicMobs.isEnabled()) {

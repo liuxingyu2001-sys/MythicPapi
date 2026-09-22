@@ -18,6 +18,7 @@
 #       - '&6Forest Boss'
 #       - '&f等级: &e%mythicpapi_level_forest_boss%'
 #       - '&f血量: &c%mythicpapi_health_forest_boss%'
+#       - '&f数量: &e%mythicpapi_amount_forest_boss%'
 #       - '&f冷却: &a%mythicpapi_cooldown_forest_boss%'
 #       - '&f预热: &b%mythicpapi_warmup_forest_boss%'
 holograms: {}

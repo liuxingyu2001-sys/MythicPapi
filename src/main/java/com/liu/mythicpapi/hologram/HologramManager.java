@@ -53,7 +53,7 @@ public final class HologramManager implements Listener {
     }
 
     public boolean create(String id, String spawnerId, Location location) {
-        if (plugin.getConfig().contains(ROOT + "." + id)) {
+        if (location.getWorld() == null || contains(id)) {
             return false;
         }
 
@@ -69,6 +69,7 @@ public final class HologramManager implements Listener {
                 "&6" + spawnerId,
                 "&f等级: &e%mythicpapi_level_" + spawnerId + "%",
                 "&f血量: &c%mythicpapi_health_" + spawnerId + "%",
+                "&f数量: &e%mythicpapi_amount_" + spawnerId + "%",
                 "&f冷却: &a%mythicpapi_cooldown_" + spawnerId + "%",
                 "&f预热: &b%mythicpapi_warmup_" + spawnerId + "%"));
         plugin.saveConfig();
@@ -105,6 +106,10 @@ public final class HologramManager implements Listener {
     public List<String> getHologramIds() {
         ConfigurationSection holograms = plugin.getConfig().getConfigurationSection(ROOT);
         return holograms == null ? List.of() : holograms.getKeys(false).stream().sorted().toList();
+    }
+
+    public boolean contains(String id) {
+        return plugin.getConfig().contains(ROOT + "." + id);
     }
 
     public void refresh() {

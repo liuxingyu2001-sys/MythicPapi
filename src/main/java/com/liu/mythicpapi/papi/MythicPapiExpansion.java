@@ -15,6 +15,7 @@ public final class MythicPapiExpansion extends PlaceholderExpansion {
     private static final String WARMUP = "warmup_";
     private static final String LEVEL = "level_";
     private static final String HEALTH = "health_";
+    private static final String AMOUNT = "amount_";
 
     private final MythicMobsHook mythicMobsHook;
     private final String version;
@@ -65,6 +66,9 @@ public final class MythicPapiExpansion extends PlaceholderExpansion {
         } else if (normalized.startsWith(HEALTH)) {
             prefix = HEALTH;
             attribute = Attribute.HEALTH;
+        } else if (normalized.startsWith(AMOUNT)) {
+            prefix = AMOUNT;
+            attribute = Attribute.AMOUNT;
         } else {
             return null;
         }
@@ -82,6 +86,8 @@ public final class MythicPapiExpansion extends PlaceholderExpansion {
                     .stream().mapToObj(MythicPapiExpansion::formatNumber).findFirst().orElse("-");
             case HEALTH -> mythicMobsHook.getCurrentHealth(spawnerId)
                     .stream().mapToObj(MythicPapiExpansion::formatHealth).findFirst().orElse("-");
+            case AMOUNT -> mythicMobsHook.getActiveMobCount(spawnerId)
+                    .stream().mapToObj(String::valueOf).findFirst().orElse(null);
         };
     }
 
@@ -96,5 +102,5 @@ public final class MythicPapiExpansion extends PlaceholderExpansion {
         return Long.toString((long) Math.ceil(health));
     }
 
-    private enum Attribute { COOLDOWN, WARMUP, LEVEL, HEALTH }
+    private enum Attribute { COOLDOWN, WARMUP, LEVEL, HEALTH, AMOUNT }
 }

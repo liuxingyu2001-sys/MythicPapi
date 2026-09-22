@@ -41,6 +41,7 @@ public final class MythicPapiCommand implements CommandExecutor, TabCompleter {
             case "add" -> add(sender, label, args);
             case "remove", "delete" -> remove(sender, label, args);
             case "scale" -> scale(sender, label, args);
+            case "sync" -> sync(sender, label, args);
             case "reload" -> reload(sender);
             case "list" -> list(sender);
             default -> {
@@ -101,6 +102,37 @@ public final class MythicPapiCommand implements CommandExecutor, TabCompleter {
         return true;
     }
 
+    private boolean sync(CommandSender sender, String label, String[] args) {
+        if (args.length != 2) {
+            sender.sendMessage(ChatColor.YELLOW + "用法: /" + label + " hologram sync");
+            return true;
+        }
+
+        int created = 0;
+        int skipped = 0;
+        int unavailable = 0;
+        for (String spawnerId : mythicMobs.getSpawnerIds()) {
+            if (!spawnerId.matches("[\\p{IsHan}A-Za-z0-9_-]+")) {
+                unavailable++;
+                continue;
+            }
+            if (holograms.contains(spawnerId)) {
+                skipped++;
+                continue;
+            }
+            var location = mythicMobs.getSpawnerLocation(spawnerId);
+            if (location.isEmpty() || !holograms.create(spawnerId, spawnerId, location.get())) {
+                unavailable++;
+                continue;
+            }
+            created++;
+        }
+        holograms.refresh();
+        sender.sendMessage(ChatColor.GREEN + "全息图同步完成：新增 " + created + " 个，已跳过 " + skipped
+                + " 个，未处理 " + unavailable + " 个。");
+        return true;
+    }
+
     private boolean scale(CommandSender sender, String label, String[] args) {
         if (args.length != 4) {
             sender.sendMessage(ChatColor.YELLOW + "用法: /" + label + " hologram scale <全息图ID> <倍率>");
@@ -134,6 +166,7 @@ public final class MythicPapiCommand implements CommandExecutor, TabCompleter {
         sendAddUsage(sender, label);
         sender.sendMessage(ChatColor.YELLOW + "/" + label + " hologram remove <全息图ID>");
         sender.sendMessage(ChatColor.YELLOW + "/" + label + " hologram scale <全息图ID> <倍率>");
+        sender.sendMessage(ChatColor.YELLOW + "/" + label + " hologram sync  &7(补齐所有刷新点全息图)");
         sender.sendMessage(ChatColor.YELLOW + "/" + label + " hologram reload | list");
     }
 
@@ -151,7 +184,7 @@ public final class MythicPapiCommand implements CommandExecutor, TabCompleter {
             return prefix(List.of("hologram"), args[0]);
         }
         if (args.length == 2 && args[0].equalsIgnoreCase("hologram")) {
-            return prefix(List.of("add", "remove", "scale", "reload", "list"), args[1]);
+            return prefix(List.of("add", "remove", "scale", "sync", "reload", "list"), args[1]);
         }
         if (args[0].equalsIgnoreCase("hologram") && args[1].equalsIgnoreCase("add")
                 && (args.length == 3 || args.length == 4)) {

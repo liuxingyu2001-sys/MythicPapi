@@ -6,7 +6,7 @@
 
     <groupId>com.liu</groupId>
     <artifactId>MythicPapi</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <name>MythicPapi</name>
     <description>PlaceholderAPI expansion for MythicMobs spawner timers.</description>
 

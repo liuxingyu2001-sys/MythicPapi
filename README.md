@@ -14,14 +14,15 @@ MythicPapi 提供以下占位符：
 - `%mythicpapi_warmup_<spawner-id>%` - Current remaining warmup time in seconds. / 当前剩余预热时间，单位为秒。
 - `%mythicpapi_level_<spawner-id>%` - Level of the most recently spawned mob. / 最近生成的生物等级。
 - `%mythicpapi_health_<spawner-id>%` - Current health of the active mob. / 当前生物生命值。
+- `%mythicpapi_amount_<spawner-id>%` - Number of alive mobs from this spawner. / 该刷新点当前存活的怪物数量。
 
 The level is read from the most recently spawned active mob at that spawner. Random spawner levels such as `1-50` remain fixed instead of being re-rolled when the placeholder refreshes. The last observed generated level remains visible during cooldown and changes only when a newer mob is generated.
 
 等级取自该刷怪器最近生成且仍处于活动状态的生物。对于 `1-50` 这类随机等级，刷新占位符时不会重新随机；冷却期间会继续显示上一次记录的等级，直到生成新的生物后才更新。
 
-The health value is the current remaining health of the active mob and shows `-` when no mob is alive. Spawner IDs may contain underscores; the `cooldown_`, `warmup_`, `level_`, or `health_` prefix is used to split the placeholder.
+The health value is the current remaining health of the active mob and shows `-` when no mob is alive. The amount value counts only active, non-dead mobs and returns `0` when none are alive. Spawner IDs may contain underscores; the `cooldown_`, `warmup_`, `level_`, `health_`, or `amount_` prefix is used to split the placeholder.
 
-生命值显示当前生物的剩余生命值，没有存活生物时显示 `-`。刷怪器 ID 可以包含下划线；插件会使用 `cooldown_`、`warmup_`、`level_` 或 `health_` 前缀解析占位符。
+生命值显示当前生物的剩余生命值，没有存活生物时显示 `-`。数量只统计仍处于活动且未死亡的怪物，没有时显示 `0`。刷怪器 ID 可以包含下划线；插件会使用 `cooldown_`、`warmup_`、`level_`、`health_` 或 `amount_` 前缀解析占位符。
 
 ## Requirements / 环境要求
 
@@ -63,7 +64,7 @@ For the usual case, use the shorter form below. It uses the MythicMobs spawner I
 
 The default lines show the spawner ID, level, cooldown, and warmup. The default display scale is `1.5`; set a hologram's `scale` in `config.yml` to override it. Edit `holograms` to change the position, lines, line spacing, scale, or view range, then apply the changes with:
 
-默认文本行显示刷怪器 ID、等级、冷却时间和预热时间。默认显示比例为 `1.5`；可以在 `config.yml` 中设置全息的 `scale` 覆盖默认值。编辑 `holograms` 可以修改位置、文本行、行间距、比例或可视距离，然后执行以下命令应用配置：
+默认文本行显示刷怪器 ID、等级、生命值、数量、冷却时间和预热时间。默认显示比例为 `1.5`；可以在 `config.yml` 中设置全息的 `scale` 覆盖默认值。编辑 `holograms` 可以修改位置、文本行、行间距、比例或可视距离，然后执行以下命令应用配置：
 
 ```text
 /mmpapi hologram reload
@@ -71,7 +72,7 @@ The default lines show the spawner ID, level, cooldown, and warmup. The default 
 
 Adjust scale in-game with `/mmpapi hologram scale <hologram-id> <multiplier>` (valid range: `0.1` to `10`). Other commands are `/mmpapi hologram remove <hologram-id>` and `/mmpapi hologram list`.
 
-可以使用 `/mmpapi hologram scale <hologram-id> <multiplier>` 在游戏中调整显示比例，有效范围为 `0.1` 至 `10`。其他命令：`/mmpapi hologram remove <hologram-id>` 和 `/mmpapi hologram list`。
+可以使用 `/mmpapi hologram scale <hologram-id> <multiplier>` 在游戏中调整显示比例，有效范围为 `0.1` 至 `10`。`/mmpapi hologram sync` 会扫描所有当前 MythicMobs 刷新点，只为缺失的同名全息图创建默认配置，不会改写已有全息图。其他命令：`/mmpapi hologram remove <hologram-id>` 和 `/mmpapi hologram list`。
 
 ## Build / 构建
 

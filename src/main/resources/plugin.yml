@@ -9,7 +9,7 @@ commands:
   mythicpapi:
     description: Manage MythicPapi holograms
     aliases: [mmpapi, mpapi]
-    usage: /mmpapi hologram <add|remove|scale|reload|list>
+    usage: /mmpapi hologram <add|remove|scale|sync|reload|list>
 permissions:
   mythicpapi.admin:
     description: Manage MythicPapi holograms
